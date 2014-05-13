@@ -30,11 +30,11 @@
 		</ul>
 	</div>
 	<div>
-		<table id="locations">
+		<table id="locations" style="font-size:40px;">
 		</table>
 	</div>
 
-	<p id="demo">Test</p>
+	<p id="demo" style="font-size:40px;">Test</p>
 
 	<script>
 
@@ -84,13 +84,7 @@
 		}
 
 
-		function updatePosition(){
-			latitude = 
-			longitude =
-			velocity =
-			heading =
-			GpsGate.Server.Hackathon.UpdatePosition(latitude, longitude, velocity, heading);
-		}
+		
 
 
 		// From w3school
@@ -105,17 +99,25 @@
 			else{x.innerHTML = "Geolocation is not supported by this browser.";}
 		}
 		function showPosition(position)
-		{
+		{ 
 			x.innerHTML = "Latitude: " + position.coords.latitude + 
 			"<br>Longitude: " + position.coords.longitude +
 			"<br>Speed: " + position.coords.speed +
 			"<br>Heading: " + position.coords.heading; 
+			updatePosition(position.coords.latitude, position.coords.longitude)
 		}
 		
+		function updatePosition(latitude, longitude){
+			
+			var velocity = 0;
+			var heading = 0;
+			GpsGate.Server.Hackathon.UpdatePosition(latitude, longitude, velocity, heading);
+		}
 
 
 		jQuery(document).ready(doLogin);
 		getLocation();
+		updatePosition();
 	</script>
 
 </body>
