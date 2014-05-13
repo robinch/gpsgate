@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hackathon</title>
+	<!-- Include core bootstrap -->
+	<script type="text/javascript" src="http://studs.gpsgate.com/Services/Core.ashx?xss2=true&deps=true"></script>
+	
+	<!-- Google maps API -->
+	<!-- https://developers.google.com/maps/documentation/javascript/tutorial -->
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+	
+	<script>
+		// Include session handling (login/logout) + jQuery
+		goog.require('GpsGate.Session');
+
+		// knockout (http://http://knockoutjs.com/)
+		// goog.require('ko');
+	</script>
+
+	<script>
+		// Include hackathon web service
+		GpsGate.require('GpsGate.Server.Hackathon');
+	</script>
+
+</head>
+<body>
+	<div>
+		Some UI stuff here...
+		<ul id="users">
+		</ul>
+	</div>
+	<div>
+		<table id="locations">
+		</table>
+	</div>
+
+	<p id="demo">Test</p>
+
+	<script>
+
+		function doLogin() {
+			var appId = 5;
+			var username = 'team6';
+			var password = '1234';
+			
+			return GpsGate.Session.login(username, password, { appId: appId }).addCallbacks(
+				function(result) {
+					console.log('Login OK');
+						setTimeout(mainProgram, 0); // use timeout "trick" to get out of the deferred callback chain scope
+					},
+					function(error) {
+						console.error("that's a bummer!")
+					}
+					);
+		}
+
+		function mainProgram() {
+			// do something
+			console.log('app.main');
+
+			// Get some users
+			// GpsGate.Server.Hackathon.GetUpdatedUsers().addCallbacks(
+			// 	function(response) {
+			// 		var ul = jQuery('#users');
+			// 		for (var i = 0; i < response.users.length; i++) {
+			// 			ul.append('<li>' + response.users[i].name + '</li>');
+			// 		}
+			// 	},
+			// 	function(error) { }
+			// );
+
+			// Get Some locations
+			GpsGate.Server.Hackathon.GetNearbyLocations().addCallbacks(
+				function(response) {
+					console.log("Get repsonse");
+					console.log(response);
+					var table = jQuery('#locations');
+					for (var i = 0; i < response.length; i++) {
+						table.append('<li>' + response[i].name + '\t' + response[i].distance + '\t' + response[i].heading +'</li>');
+					}
+				},
+				function(error) { }
+				);
+		}
+
+
+		function updatePosition(){
+			latitude = 
+			longitude =
+			velocity =
+			heading =
+			GpsGate.Server.Hackathon.UpdatePosition(latitude, longitude, velocity, heading);
+		}
+
+
+		// From w3school
+
+		var x = document.getElementById("demo");
+		function getLocation()
+		{
+			if (navigator.geolocation)
+			{
+				navigator.geolocation.getCurrentPosition(showPosition);
+			}
+			else{x.innerHTML = "Geolocation is not supported by this browser.";}
+		}
+		function showPosition(position)
+		{
+			x.innerHTML = "Latitude: " + position.coords.latitude + 
+			"<br>Longitude: " + position.coords.longitude +
+			"<br>Speed: " + position.coords.speed +
+			"<br>Heading: " + position.coords.heading; 
+		}
+		
+
+
+		jQuery(document).ready(doLogin);
+		getLocation();
+	</script>
+
+</body>
+</html>
